@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head><title>Upload Video</title></head>
+<body>
+    <h2>Upload Your Video</h2>
+    <input type="file" id="videoInput" accept="video/mp4">
+    <button onclick="upload()">Submit</button>
+    <p id="status"></p>
+
+    <script>
+        const uniqueId = window.location.pathname.split('/')[2]; // Get ID from URL
+        
+        async function upload() {
+            const fileInput = document.getElementById('videoInput');
+            const file = fileInput.files[0];
+            
+            if (!file) { alert("Please select a file"); return; }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                document.getElementById('status').innerText = "Uploading...";
+                const response = await fetch(`/upload/${uniqueId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    document.getElementById('status').innerText = "✅ Upload Successful! Waiting for bot...";
+                } else {
+                    document.getElementById('status').innerText = "❌ Upload Failed";
+                }
+            } catch (e) {
+                document.getElementById('status').innerText = "Error: " + e;
+            }
+        }
+    </script>
+</body>
+</html>
